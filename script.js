@@ -1,4 +1,5 @@
 const URL_PLANILHA = "https://docs.google.com/spreadsheets/d/1kz185SYCWeIEcJhWMWcPyZIhm4RvqGgwbU0DFEPw5kY/export?format=csv&gid=694267279";
+const URL_MENU_NOVO = "https://docs.google.com/spreadsheets/d/1jVjEL9ZsoDy_yNYCaAQmu1MRv6EqUassCTEj3osn4Ec/export?format=csv&gid=1022328164";
 const URL_BASE = "https://meusachadinhos.qd.je/";
 const ITENS_POR_PAGINA = 20;
 const SLIDES_NO_CARROSSEL = 6;
@@ -50,6 +51,7 @@ function carregarFirebase(){
 
 let produtos = [];
 let categorias = [];
+let menuEstrutura = [];
 let linkAtual   = "";
 let tituloAtual = "";
 let indexAtual  = -1;
@@ -104,7 +106,8 @@ function parseCSV(text){
 async function carregarProdutos(){
     const resp = await fetch(URL_PLANILHA, {cache:"no-store"});
     if(!resp.ok) throw new Error("Erro HTTP " + resp.status);
-    const texto = await resp.text();
+    const buffer = await resp.arrayBuffer();
+    const texto = new TextDecoder("utf-8").decode(buffer);
     const linhas = parseCSV(texto);
     produtos = [];
     const ERROS_SHEETS = /^#(ERROR!|N\/A|REF!|VALUE!|DIV\/0!|NAME\?|NULL!|NUM!)/i;
@@ -132,6 +135,37 @@ async function carregarProdutos(){
         });
     });
     categorias = Array.from(setCats).sort((a,b)=>a.localeCompare(b));
+}
+
+/* =====================================================
+   Carrega a estrutura do menu (aba Menu_Novo)
+   Colunas: A=Nivel_1, B=Nivel_2, C=Nivel_3, D=Palavra_Chave, E=Categoria, F=Grupo
+===================================================== */
+async function carregarMenuEstrutura(){
+    try{
+        const resp = await fetch(URL_MENU_NOVO, {cache:"no-store"});
+        if(!resp.ok) throw new Error("Erro HTTP " + resp.status);
+        const buffer = await resp.arrayBuffer();
+        const texto = new TextDecoder("utf-8").decode(buffer);
+        const linhas = parseCSV(texto);
+
+        menuEstrutura = [];
+        for(let i = 1; i < linhas.length; i++){
+            const l = linhas[i];
+            if(!l || l.length < 5) continue;
+            const nivel1 = (l[0]||"").trim();
+            const nivel2 = (l[1]||"").trim();
+            const nivel3 = (l[2]||"").trim();
+            const palavraChave = (l[3]||"").trim();
+            const categoria = (l[4]||"").trim();
+            const grupo = (l[5]||"").trim();
+            if(!nivel1 || !palavraChave) continue;
+            menuEstrutura.push({ nivel1, nivel2, nivel3, palavraChave, categoria, grupo });
+        }
+    }catch(e){
+        console.warn("Não foi possível carregar o menu novo:", e);
+        menuEstrutura = [];
+    }
 }
 
 function normalizar(s){
@@ -179,13 +213,42 @@ function criarCardGrid(produto, indexGlobal){
     return card;
 }
 
+/* =====================================================
+   Menu de categorias em cascata (Nivel_1 → Nivel_2 → Nivel_3)
+===================================================== */
 function preencherMenuCategorias(){
     const dd = document.getElementById("dropdownCategorias");
     dd.innerHTML = "";
-    if(!categorias.length){
-        dd.innerHTML = '<div class="cat-item">Nenhuma categoria</div>';
+
+    // Fallback: se a planilha Menu_Novo não carregou, usa lista simples
+    if(!menuEstrutura.length){
+        if(!categorias.length){
+            dd.innerHTML = '<div class="cat-item">Nenhuma categoria</div>';
+            return;
+        }
+        const todas = document.createElement("button");
+        todas.className = "cat-item";
+        todas.type = "button";
+        todas.textContent = "Todas as ofertas";
+        todas.onclick = function(){ toggleMenuCategorias(); limparBusca(); };
+        dd.appendChild(todas);
+
+        categorias.forEach(function(cat){
+            const a = document.createElement("button");
+            a.className = "cat-item";
+            a.type = "button";
+            a.textContent = cat;
+            a.onclick = function(){
+                toggleMenuCategorias();
+                document.getElementById("inputBusca").value = cat;
+                executarBusca();
+            };
+            dd.appendChild(a);
+        });
         return;
     }
+
+    // Botão "Todas as ofertas"
     const todas = document.createElement("button");
     todas.className = "cat-item";
     todas.type = "button";
@@ -193,19 +256,83 @@ function preencherMenuCategorias(){
     todas.onclick = function(){ toggleMenuCategorias(); limparBusca(); };
     dd.appendChild(todas);
 
-    categorias.forEach(function(cat){
-        const a = document.createElement("button");
-        a.className = "cat-item";
-        a.type = "button";
-        a.textContent = cat;
-        a.onclick = function(){
-            toggleMenuCategorias();
-            document.getElementById("inputBusca").value = cat;
-            executarBusca();
+    // Agrupa por Nivel_1 → Nivel_2 → itens
+    const mapaN1 = new Map();
+    menuEstrutura.forEach(function(item){
+        if(!mapaN1.has(item.nivel1)) mapaN1.set(item.nivel1, new Map());
+        const mapaN2 = mapaN1.get(item.nivel1);
+        if(!mapaN2.has(item.nivel2)) mapaN2.set(item.nivel2, []);
+        mapaN2.get(item.nivel2).push(item);
+    });
+
+    // Monta o menu
+    Array.from(mapaN1.keys()).sort().forEach(function(n1){
+        const grupo = document.createElement("div");
+        grupo.className = "menu-grupo";
+
+        const btnN1 = document.createElement("button");
+        btnN1.className = "cat-item menu-n1";
+        btnN1.type = "button";
+        btnN1.innerHTML = '▸ ' + n1;
+        btnN1.onclick = function(e){
+            e.stopPropagation();
+            const sub = grupo.querySelector(".menu-sub-n1");
+            const abrindo = (sub.style.display !== "block");
+            sub.style.display = abrindo ? "block" : "none";
+            btnN1.innerHTML = (abrindo ? "▾ " : "▸ ") + n1;
         };
-        dd.appendChild(a);
+        grupo.appendChild(btnN1);
+
+        const subN1 = document.createElement("div");
+        subN1.className = "menu-sub-n1";
+        subN1.style.display = "none";
+
+        const mapaN2 = mapaN1.get(n1);
+        Array.from(mapaN2.keys()).sort().forEach(function(n2){
+            const btnN2 = document.createElement("button");
+            btnN2.className = "cat-item menu-n2";
+            btnN2.type = "button";
+            btnN2.innerHTML = '&nbsp;&nbsp;▸ ' + n2;
+            btnN2.onclick = function(e){
+                e.stopPropagation();
+                const lista = btnN2.nextElementSibling;
+                const abrindo = (lista.style.display !== "block");
+                lista.style.display = abrindo ? "block" : "none";
+                btnN2.innerHTML = '&nbsp;&nbsp;' + (abrindo ? "▾ " : "▸ ") + n2;
+            };
+            subN1.appendChild(btnN2);
+
+            const subN2 = document.createElement("div");
+            subN2.className = "menu-sub-n2";
+            subN2.style.display = "none";
+
+            const vistos = new Set();
+            mapaN2.get(n2).forEach(function(item){
+                const chave = item.nivel3 + "||" + item.palavraChave;
+                if(vistos.has(chave)) return;
+                vistos.add(chave);
+
+                const btnN3 = document.createElement("button");
+                btnN3.className = "cat-item menu-n3";
+                btnN3.type = "button";
+                btnN3.textContent = item.nivel3 + " — " + item.palavraChave;
+                btnN3.onclick = function(e){
+                    e.stopPropagation();
+                    toggleMenuCategorias();
+                    document.getElementById("inputBusca").value = item.palavraChave;
+                    executarBusca();
+                };
+                subN2.appendChild(btnN3);
+            });
+
+            subN1.appendChild(subN2);
+        });
+
+        grupo.appendChild(subN1);
+        dd.appendChild(grupo);
     });
 }
+
 function toggleMenuCategorias(e){
     if(e) e.stopPropagation();
     document.getElementById("dropdownCategorias").classList.toggle("aberto");
@@ -980,6 +1107,7 @@ function iniciarListeners(){
             idx = produtos.findIndex(prod => hashProduto(prod) === p);
         }
         if(idx >= 0 && produtos[idx]){
+            await carregarMenuEstrutura();
             preencherMenuCategorias();
             iniciarListeners();
             carregarPaginaProduto(idx);
@@ -987,6 +1115,7 @@ function iniciarListeners(){
         }
     }
 
+    await carregarMenuEstrutura();
     preencherMenuCategorias();
     construirCarrosselDinamico();
     iniciarListeners();
