@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meus Achadinhos — Melhores Ofertas</title>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="style.css">
+<script>
+(function(){
+    function temParam(){
+        if(/[?&]p=[\w]+/.test(location.search)) return true;
+        try{
+            if(window.self !== window.top && document.referrer){
+                return /[?&]p=[\w]+/.test(document.referrer);
+            }
+        }catch(e){}
+        return false;
+    }
+    if(temParam()){
+        document.documentElement.className += " modo-produto";
+    }
+})();
+</script>
+<meta property="og:title" content="Meus Achadinhos — As melhores ofertas em um só lugar">
+<meta property="og:description" content="Encontre ofertas selecionadas com desconto de até 70%. Eletrônicos, casa, moda, beleza e muito mais!">
+<meta name="description" content="Encontre as melhores ofertas em eletrônicos, casa, moda, beleza, ferramentas e muito mais. Descontos de até 70% atualizados diariamente no Meus Achadinhos!">
+<meta property="og:image" content="https://meusachadinhos.qd.je/og-image.png">
+<meta property="og:image:secure_url" content="https://meusachadinhos.qd.je/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://meusachadinhos.qd.je/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Meus Achadinhos">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://meusachadinhos.qd.je/#website",
+      "url": "https://meusachadinhos.qd.je/",
+      "name": "Meus Achadinhos",
+      "description": "Encontre as melhores ofertas em eletrônicos, casa, moda, beleza, ferramentas e muito mais. Descontos de até 70% atualizados diariamente.",
+      "inLanguage": "pt-BR",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://meusachadinhos.qd.je/?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://meusachadinhos.qd.je/#organization",
+      "name": "Meus Achadinhos",
+      "url": "https://meusachadinhos.qd.je/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://meusachadinhos.qd.je/logo.png"
+      },
+      "sameAs": [
+        "https://www.instagram.com/meus_achadinhos_premium/"
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div id="loading">
+  <div class="spin"></div>
+  <p>Carregando ofertas...</p>
+</div>
+
+<header class="topo" id="topoHeader">
+  <div class="topo-inner">
+    <a href="./" class="logo" onclick="if(location.search){event.preventDefault();limparBusca();}">
+     <img class="logo-img" src="/logo.png" alt="Meus Achadinhos" onerror="this.style.display='none'">
+      <span class="logo-txt">
+        <span class="logo-nome">Meus Achadinhos</span>
+        <span class="logo-sub">As melhores ofertas em um só lugar</span>
+      </span>
+    </a>
+    <form class="busca" onsubmit="event.preventDefault();executarBusca();">
+      <input type="text" id="inputBusca" placeholder="Buscar produtos, marcas e muito mais..." autocomplete="off">
+      <button type="submit" aria-label="Buscar">🔍</button>
+    </form>
+    <div class="menu-cat">
+      <button class="btn-menu" onclick="toggleMenuCategorias(event)">☰ Categorias ▾</button>
+      <div class="dropdown" id="dropdownCategorias"></div>
+    </div>
+  </div>
+</header>
+
+<main id="paginaNormal" style="visibility:hidden">
+<div class="container">
+<div class="carousel" id="carrosselBox"></div>
+
+<section class="barra-icones">
+    <div class="barra-icones-inner">
+        <div class="barra-grupo">
+            <span class="barra-label">Siga:</span>
+            <a href="https://t.me/meusachadinhospromocionais" target="_blank" rel="noopener noreferrer" class="icone-btn instagram" aria-label="Instagram" title="Siga no Instagram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </a>
+            <a href="https://t.me/meusachadinhospromocionais/82" target="_blank" rel="noopener noreferrer" class="icone-btn telegram" aria-label="Telegram" title="Entre no grupo do Telegram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+                </svg>
+            </a>
+        </div>
+
+        <div class="barra-divisor"></div>
+
+        <div class="barra-grupo">
+            <span class="barra-label">Ofertas de:</span>
+            <span class="icone-info mercadolivre" aria-label="Mercado Livre" title="Produtos do Mercado Livre">
+                <img src="/mercadolivre.webp" alt="Mercado Livre" width="24" height="24">
+            </span>
+            <span class="icone-info shopee" aria-label="Shopee" title="Produtos da Shopee">
+                <img src="/shopee.webp" alt="Shopee" width="24" height="24">
+            </span>
+        </div>
+    </div>
+</section>
+
+<h1 class="titulo-principal" id="tituloPrincipal">🌟 Meus Achadinhos — Melhores Ofertas</h1>
+<div id="erro" style="display:none"></div>
+
+<div id="areaResultados" style="display:none">
+  <div class="resultado-header">
+    <h2 class="titulo-secao" style="display:none">🔎 Destaques para "<span id="termoBusca"></span>" <span id="contResultados" style="font-size:14px;color:#888;font-weight:normal"></span></h2>
+    <button class="btn-limpar" onclick="limparBusca()">← Ver todas as ofertas</button>
+  </div>
+  <div id="gridDestaques" class="grid-produtos"></div>
+  <div id="paginacao" class="paginacao"></div>
+  <h2 class="titulo-secao" id="tituloRelacionados" style="display:none">✨ Você também pode gostar</h2>
+  <div id="carrosseisRelacionados"></div>
+</div>
+
+<div id="catalogo"></div>
+<div id="paginacaoCatalogo" class="paginacao"></div>
+</div>
+
+<div class="popup" id="popup">
+    <div class="popup-box">
+        <button class="fechar" onclick="fecharPopup()">×</button>
+        <div class="popup-foto-area">
+            <img class="popup-foto" id="popupFoto" src="" alt="">
+        </div>
+        <div class="popup-titulo" id="popupTitulo"></div>
+        <a class="popup-comprar" id="popupComprar" href="#" target="_blank" rel="noopener noreferrer">🛒 EU QUERO</a>
+        <div class="popup-descricao" id="popupDescricao"></div>
+        <button class="ver-mais" id="verMaisDescricao" onclick="toggleDescricao()">Ver mais</button>
+        <button class="popup-compartilhar" onclick="toggleCompartilhamento()">↗ COMPARTILHAR OFERTA</button>
+        <div class="link-box">
+            <div class="link-box-label">🔗 Link desta oferta</div>
+            <div class="link-box-linha">
+                <input class="link-box-input" id="popupLinkInput" type="text" readonly value="">
+                <button class="link-box-btn" id="popupLinkBtn" onclick="copiarLinkBox('popupLinkInput','popupLinkBtn')">📋 Copiar</button>
+            </div>
+        </div>
+        <div class="compartilhamento" id="compartilhamento">
+            <button class="whatsapp" onclick="compartilharWhatsApp()">WhatsApp</button>
+            <button class="facebook" onclick="compartilharFacebook()">Facebook</button>
+            <button class="telegram" onclick="compartilharTelegram()">Telegram</button>
+            <button class="twitter" onclick="compartilharTwitter()">X</button>
+        </div>
+        <p class="dica-stories" id="dicaStories">Link copiado! Abra o Instagram → Stories → sticker de LINK → cole o link.</p>
+
+        <div class="aval-section">
+            <div class="aval-cab">
+                <h3 class="aval-titulo">⭐ Avaliações e Comentários</h3>
+                <div class="aval-resumo" id="popupAvalResumo"></div>
+            </div>
+            <div class="aval-form">
+                <label class="aval-form-label">Sua nota</label>
+                <div class="aval-estrelas-input" id="popupEstrelasInput">
+                    <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+                </div>
+                <input type="text" id="popupNome" placeholder="Seu nome (opcional)" maxlength="40">
+                <textarea id="popupComentario" placeholder="Escreva sua opinião sobre o produto..." maxlength="500"></textarea>
+                <button class="aval-btn-enviar" id="popupBtnEnviar" onclick="enviarAvaliacao('popup')">Publicar avaliação</button>
+                <div class="aval-msg-ok" id="popupMsgOk">✓ Avaliação publicada! Obrigado.</div>
+            </div>
+            <div class="aval-lista" id="popupAvalLista"></div>
+        </div>
+    </div>
+</div>
+</main>
+
+<footer class="rodape">
+    <div class="rodape-inner">
+        <a href="https://www.instagram.com/meus_achadinhos_premium/" target="_blank" rel="noopener noreferrer" class="rodape-insta">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+            <span>Siga o <strong>@meus_achadinhos_premium</strong> no Instagram</span>
+        </a>
+        <p class="rodape-copy">© 2026 Meus Achadinhos — As melhores ofertas em um só lugar.</p>
+    </div>
+</footer>
+
+<div id="paginaProduto">
+    <div class="pp-wrap">
+        <div class="pp-header">🌟 Meus Achadinhos — Oferta Exclusiva</div>
+        <div class="pp-foto-area">
+            <a class="pp-voltar-topo" href="https://meusachadinhos.qd.je/">← Meus Achadinhos</a>
+            <img class="pp-foto" id="ppFoto" src="" alt="">
+        </div>
+        <div class="pp-body">
+            <div class="pp-titulo" id="ppTitulo"></div>
+            <a class="pp-comprar" id="ppComprar" href="#" target="_blank" rel="noopener noreferrer">🛒 EU QUERO ESSA OFERTA</a>
+            <div class="pp-descricao" id="ppDescricao"></div>
+            <button class="pp-ver-mais" id="ppVerMais" onclick="ppToggleDescricao()">Ver mais</button>
+            <button class="pp-compartilhar" onclick="ppToggleCompartilhamento()">↗ COMPARTILHAR ESSA OFERTA</button>
+            <div class="link-box">
+                <div class="link-box-label">🔗 Link desta oferta</div>
+                <div class="link-box-linha">
+                    <input class="link-box-input" id="ppLinkInput" type="text" readonly value="">
+                    <button class="link-box-btn" id="ppLinkBtn" onclick="copiarLinkBox('ppLinkInput','ppLinkBtn')">📋 Copiar</button>
+                </div>
+            </div>
+            <div class="compartilhamento" id="ppCompartilhamento">
+                <button class="whatsapp" onclick="compartilharWhatsApp()">WhatsApp</button>
+                <button class="facebook" onclick="compartilharFacebook()">Facebook</button>
+                <button class="telegram" onclick="compartilharTelegram()">Telegram</button>
+                <button class="twitter" onclick="compartilharTwitter()">X</button>
+            </div>
+            <p class="dica-stories" id="ppDicaStories">Link copiado! Abra o Instagram → Stories → sticker de LINK → cole o link.</p>
+
+            <div class="aval-section">
+                <div class="aval-cab">
+                    <h3 class="aval-titulo">⭐ Avaliações e Comentários</h3>
+                    <div class="aval-resumo" id="ppAvalResumo"></div>
+                </div>
+                <div class="aval-form">
+                    <label class="aval-form-label">Sua nota</label>
+                    <div class="aval-estrelas-input" id="ppEstrelasInput">
+                        <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+                    </div>
+                    <input type="text" id="ppNome" placeholder="Seu nome (opcional)" maxlength="40">
+                    <textarea id="ppComentario" placeholder="Escreva sua opinião sobre o produto..." maxlength="500"></textarea>
+                    <button class="aval-btn-enviar" id="ppBtnEnviar" onclick="enviarAvaliacao('pp')">Publicar avaliação</button>
+                    <div class="aval-msg-ok" id="ppMsgOk">✓ Avaliação publicada! Obrigado.</div>
+                </div>
+                <div class="aval-lista" id="ppAvalLista"></div>
+            </div>
+
+            <a class="pp-voltar" href="https://meusachadinhos.qd.je/">← Ver todas as ofertas</a>
+        </div>
+    </div>
+</div>
+
+<script src="script.js" defer></script>
+</body>
+</html>
