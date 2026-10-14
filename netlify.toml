@@ -6,7 +6,7 @@
   function = "sitemap"
   path = "/sitemap.xml"
 
-  [[edge_functions]]
+[[edge_functions]]
   function = "divulgacao"
   path = "/divulgacao.json"
 
