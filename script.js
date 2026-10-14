@@ -371,11 +371,12 @@ function executarBusca(){
 
     if(palavras.length === 0){ limparBusca(); return; }
 
+    // ⭐ Busca AGORA só no TÍTULO e na CATEGORIA. NÃO busca na descrição.
+    // A descrição é longa demais e traz resultados errados.
     resultadosBusca = produtos.filter(function(p){
         const titulo    = normalizar(p.titulo    || '');
-        const descricao = normalizar(p.descricao || '');
         const categoria = normalizar(p.categoria || '');
-        const campos = (titulo + ' ' + descricao + ' ' + categoria).trim();
+        const campos = (titulo + ' ' + categoria).trim();
 
         if(!campos) return false;
 
