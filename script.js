@@ -168,9 +168,17 @@ async function carregarMenuEstrutura(){
     }
 }
 
+/* =====================================================
+   Normaliza texto para busca:
+   - minúsculas
+   - remove acentos
+   - troca hífen, underline e pontuação por espaço
+   - reduz espaços múltiplos
+===================================================== */
 function normalizar(s){
     return (s||'').toString().toLowerCase()
         .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/[-_/.,;:!?()\[\]{}|]/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
 }
@@ -344,6 +352,13 @@ document.addEventListener("click", function(e){
     }
 });
 
+/* =====================================================
+   Busca — agora com lógica mais tolerante:
+   - Cada palavra é buscada individualmente
+   - Se TODAS as palavras aparecem em QUALQUER campo (titulo/descricao/categoria),
+     o produto entra no resultado
+   - Se a busca exata não retornar nada, faz busca mais ampla (qualquer palavra)
+===================================================== */
 function executarBusca(){
     const termo = document.getElementById("inputBusca").value.trim();
     if(!termo){ limparBusca(); return; }
@@ -351,17 +366,25 @@ function executarBusca(){
     const t = normalizar(termo);
     const palavras = t.split(' ').filter(function(p){ return p.length > 0; });
 
-    resultadosBusca = produtos.filter(function(p){
-        const tituloNorm = normalizar(p.titulo);
-        const descNorm   = normalizar(p.descricao);
-        const catNorm    = normalizar(p.categoria);
+    // 1ª tentativa: TODAS as palavras devem aparecer em algum campo
+    let encontrados = produtos.filter(function(p){
+        const campos = normalizar(p.titulo + " " + p.descricao + " " + p.categoria);
         return palavras.every(function(palavra){
-            return tituloNorm.includes(palavra)
-                || descNorm.includes(palavra)
-                || catNorm.includes(palavra);
+            return campos.includes(palavra);
         });
     });
 
+    // 2ª tentativa: se nada foi encontrado, relaxa — QUALQUER palavra basta
+    if(encontrados.length === 0 && palavras.length > 1){
+        encontrados = produtos.filter(function(p){
+            const campos = normalizar(p.titulo + " " + p.descricao + " " + p.categoria);
+            return palavras.some(function(palavra){
+                return campos.includes(palavra);
+            });
+        });
+    }
+
+    resultadosBusca = encontrados;
     paginaAtual = 1;
     mostrarResultados();
     try{
