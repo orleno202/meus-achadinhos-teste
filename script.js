@@ -169,19 +169,21 @@ async function carregarMenuEstrutura(){
 }
 
 /* =====================================================
-   Normaliza texto para busca:
-   - minúsculas
-   - remove acentos
-   - troca hífen, underline e pontuação por espaço
-   - reduz espaços múltiplos
+   Normaliza texto para busca (VERSÃO BLINDADA):
+   - Sempre retorna string (nunca null/undefined)
+   - Minúsculas, sem acento
+   - Troca hífen e pontuação por espaço
+   - Nunca retorna string só com espaços
 ===================================================== */
 function normalizar(s){
-    return (s||'').toString().toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-        .replace(/[-_/.,;:!?()\[\]{}|]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+    if(s === null || s === undefined) return "";
+    let out = String(s).toLowerCase();
+    out = out.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    out = out.replace(/[-_/.,;:!?()\[\]{}|]/g, ' ');
+    out = out.replace(/\s+/g, ' ');
+    return out.trim();
 }
+
 function escapeHtml(s){
     return (s||"").toString()
         .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
@@ -353,38 +355,36 @@ document.addEventListener("click", function(e){
 });
 
 /* =====================================================
-   Busca — agora com lógica mais tolerante:
-   - Cada palavra é buscada individualmente
-   - Se TODAS as palavras aparecem em QUALQUER campo (titulo/descricao/categoria),
-     o produto entra no resultado
-   - Se a busca exata não retornar nada, faz busca mais ampla (qualquer palavra)
+   Busca — VERSÃO BLINDADA
+   Regras:
+   - Nenhuma palavra vazia entra no filtro
+   - Produto sem título/descrição/categoria nunca bate
+   - Todas as palavras precisam aparecer em algum campo
 ===================================================== */
 function executarBusca(){
     const termo = document.getElementById("inputBusca").value.trim();
     if(!termo){ limparBusca(); return; }
     termoBuscaAtual = termo;
-    const t = normalizar(termo);
-    const palavras = t.split(' ').filter(function(p){ return p.length > 0; });
 
-    // 1ª tentativa: TODAS as palavras devem aparecer em algum campo
-    let encontrados = produtos.filter(function(p){
-        const campos = normalizar(p.titulo + " " + p.descricao + " " + p.categoria);
+    const t = normalizar(termo);
+    const palavras = t.split(' ').filter(function(p){ return p && p.length > 0; });
+
+    if(palavras.length === 0){ limparBusca(); return; }
+
+    resultadosBusca = produtos.filter(function(p){
+        const titulo    = normalizar(p.titulo    || '');
+        const descricao = normalizar(p.descricao || '');
+        const categoria = normalizar(p.categoria || '');
+        const campos = (titulo + ' ' + descricao + ' ' + categoria).trim();
+
+        if(!campos) return false;
+
         return palavras.every(function(palavra){
-            return campos.includes(palavra);
+            if(!palavra) return false;
+            return campos.indexOf(palavra) !== -1;
         });
     });
 
-    // 2ª tentativa: se nada foi encontrado, relaxa — QUALQUER palavra basta
-    if(encontrados.length === 0 && palavras.length > 1){
-        encontrados = produtos.filter(function(p){
-            const campos = normalizar(p.titulo + " " + p.descricao + " " + p.categoria);
-            return palavras.some(function(palavra){
-                return campos.includes(palavra);
-            });
-        });
-    }
-
-    resultadosBusca = encontrados;
     paginaAtual = 1;
     mostrarResultados();
     try{
